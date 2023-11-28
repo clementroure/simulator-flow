@@ -58,7 +58,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className={cn("min-h-screen antialiased", fontSans.className)}>
         <Providers>
           {children}
-          <TailwindIndicator />
+          {/* <TailwindIndicator /> */}
         </Providers>
       </body>
     </html>

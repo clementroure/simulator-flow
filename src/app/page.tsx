@@ -1,28 +1,25 @@
-import Link from "next/link";
-import { GithubIcon } from "lucide-react";
+"use client"
 
-import { siteConfig } from "@/config";
-import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { buttonVariants } from "@/components/ui/button";
+import { ReactFlowProvider } from "reactflow";
+import Flow from "../components/reactflow/flow";
+import NodeSidebar from "../components/reactflow/nodesidebar";
+import "./styles.css"
 
 export default function IndexPage() {
+  const onDragStart = (event: any, nodeType: any) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
-    <main className="text-balance container grid max-w-prose items-center gap-6 space-y-4 pb-8 pt-6 md:py-10">
-      <div className="flex min-h-[50vh] flex-col justify-center gap-3">
-        <h1 className="text-5xl font-bold">{siteConfig.title}</h1>
-        <p className="text-slate-500">{siteConfig.description}</p>
-        <div className="space-x-2">
-          <Link
-            className={cn(buttonVariants(), "space-x-2")}
-            href="https://github.com/A7med3bdulBaset/next-template"
-          >
-            <GithubIcon />
-            <span>Github</span>
-          </Link>
-          <ThemeToggle variant="outline" size="icon" />
+    <ReactFlowProvider>
+      <div className="flex h-screen">
+        <NodeSidebar onDragStart={onDragStart} className="w-64 h-full" />
+        <div className="w-0.5 bg-gray-600"></div>
+        <div className="flex-1">
+          <Flow />
         </div>
       </div>
-    </main>
+    </ReactFlowProvider>
   );
 }
