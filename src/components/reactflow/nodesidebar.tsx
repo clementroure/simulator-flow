@@ -1,4 +1,4 @@
-import erc20Abi from './abi/ERC20.json';
+import erc20Abi from './abi/UNISWAP_V2_FACTORY.json';
 
 function NodeSidebar({ onDragStart }: any) {
   return (

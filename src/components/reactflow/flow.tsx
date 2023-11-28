@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import ReactFlow, {
   Controls,
   MiniMap,
@@ -10,37 +10,46 @@ import ReactFlow, {
   addEdge,
   Edge,
   Node,
+  useUpdateNodeInternals,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { toPng } from 'html-to-image';
 import { useReactFlow, getRectOfNodes, getTransformForBounds } from 'reactflow';
 import { Button } from '../ui/button';
 import CustomNode from './customNode';
+import StartNode from './startNode';
 
 const initialNodes: Node[] = [
   {
-    id: '1',
-    type: 'input',
-    data: { label: 'Hello' },
+    id: '0',
+    type: 'startNode', // Custom type for the "START" node
+    data: { label: 'START' },
     position: { x: 0, y: 0 },
+    deletable: false,
+    selectable: false,
   },
-  {
+  /* {
     id: '2',
     type: "output",
-    data: { label: 'World' },
-    position: { x: 100, y: 100 },
-  },
+    data: { label: 'END' },
+    position: { x: 0, y: 300 },
+    deletable: false,
+    selectable: false,
+  }, */
 ];
 
 const initialEdges: Edge[] = [
-  { id: '1-2', source: '1', target: '2', label: 'to the', type: 'step', animated: true},
+  // { id: '1-2', source: '1', target: '2', label: 'to the', type: 'step', animated: true},
 ];
 
-const nodeTypes = { abiNode: CustomNode };
-
+const nodeTypes = {
+  abiNode: (props: any) => <CustomNode {...props} />,
+  startNode: StartNode, 
+};
 function Flow() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
+  const [selectedEdgeId, setSelectedEdgeId] = useState(null); // Add state for tracking the selected edge
 
   const { getNodes } = useReactFlow();
 
@@ -79,10 +88,17 @@ function Flow() {
     (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
     [],
   );
-  const onEdgesChange = useCallback(
-    (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
-  );
+  const onEdgesChange = useCallback((changes: any) => {
+    // Detect if an edge is selected
+    const selectedEdge = changes.find((change:any) => change.selected);
+    if (selectedEdge) {
+      setSelectedEdgeId(selectedEdge.id);
+    } else {
+      setSelectedEdgeId(null);
+    }
+    
+    setEdges((eds) => applyEdgeChanges(changes, eds));
+  }, []);
   const onConnect = useCallback((params: any) => {
     const newEdge = {
       ...params,
@@ -91,6 +107,12 @@ function Flow() {
   
     setEdges((eds) => addEdge(newEdge, eds));
   }, []);
+
+  const updateNodeInternals = useUpdateNodeInternals();
+  // Call this function whenever the edges change
+  useEffect(() => {
+    
+  }, [edges, reactFlowInstance]);
 
   const downloadImage = useCallback((dataUrl: string) => {
     const a = document.createElement('a');
@@ -126,7 +148,10 @@ function Flow() {
         nodes={nodes}
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
-        edges={edges}
+        edges={edges.map(edge => ({
+          ...edge,
+          style: { stroke: edge.id === selectedEdgeId ? 'blue' : '#222' } // Change the stroke color based on selection
+        }))}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
@@ -137,8 +162,8 @@ function Flow() {
             if (n.style?.background && typeof n.style.background === 'string') {
               return n.style.background; // Ensuring it's a string
             }
-            if (n.type === "input") return "#0041d0"; // Example color for 'input' type nodes
-            if (n.type === "output") return "#ff0072"; // Example color for 'output' type nodes
+            if (n.type === "startNode") return "#90EE90"; // Example color for 'input' type nodes
+            if (n.type === "output") return "#FFA07A"; // Example color for 'output' type nodes
             if (n.type === "default") return "#1a192b"; // Example color for 'default' type nodes
         
             return "#eee"; // Default color
@@ -147,8 +172,8 @@ function Flow() {
             if (n.style?.background && typeof n.style.background === 'string') {
               return n.style.background;
             }
-            if (n.type === "input") return "#0041d0";
-            if (n.type === "output") return "#ff0072";
+            if (n.type === "startNode") return "#90EE90";
+            if (n.type === "output") return "#FFA07A";
             if (n.type === "default") return "#1a192b";
           
             return "#eee";
