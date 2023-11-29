@@ -56,10 +56,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn("min-h-screen antialiased", fontSans.className)}>
-        <Providers>
-          {children}
+{/*         <Providers> */} 
+         {children}
           {/* <TailwindIndicator /> */}
-        </Providers>
+{/*         </Providers> */}  
       </body>
     </html>
   );

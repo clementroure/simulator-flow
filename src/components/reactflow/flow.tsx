@@ -43,10 +43,12 @@ const initialEdges: Edge[] = [
 ];
 
 const nodeTypes = {
-  abiNode: (props: any) => <CustomNode {...props} />,
+  abiNode: (props: any) => <CustomNode {...props} onInputChange={() => {}}/>,
   startNode: StartNode, 
 };
 function Flow() {
+  const [graphData, setGraphData] = useState({ nodes: initialNodes, edges: initialEdges });
+
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
   const [selectedEdgeId, setSelectedEdgeId] = useState(null); // Add state for tracking the selected edge
@@ -104,9 +106,21 @@ function Flow() {
       ...params,
       animated: true, 
     };
-  
-    setEdges((eds) => addEdge(newEdge, eds));
-  }, []);
+    // Check if the source or target is already connected
+    const isAlreadyConnected = edges.some(
+      (edge) =>
+        (edge.source === params.source && edge.sourceHandle === params.sourceHandle) ||
+        (edge.target === params.target && edge.targetHandle === params.targetHandle)
+    );
+
+    if (!isAlreadyConnected) {
+      // If not already connected, add the new edge
+      setEdges((eds) => addEdge(newEdge, eds));
+    } else {
+      // Optionally, alert the user that the connection exists
+      alert('This connection already exists.');
+    }
+  }, [edges]);
 
   const updateNodeInternals = useUpdateNodeInternals();
   // Call this function whenever the edges change
@@ -141,6 +155,21 @@ function Flow() {
       .catch(err => console.error('Error while downloading the image:', err));
     }
   }, [getNodes, downloadImage]);
+
+
+    // Function to update the graph data state
+    const updateGraphData = useCallback(() => {
+      const nodesData = nodes.map(node => node.data);
+      setGraphData({ nodes: nodesData, edges });
+    }, [nodes, edges]);
+    // Update graph data whenever nodes or edges change
+    useEffect(() => {
+      updateGraphData();
+    }, [nodes, edges, updateGraphData]);
+    // Print the graph data to the console (or display it in the UI)
+    useEffect(() => {
+      console.log("Current Graph Data:", graphData);
+    }, [graphData]);
 
   return (
     <div ref={reactFlowWrapper} style={{ height: '100%' }} onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
