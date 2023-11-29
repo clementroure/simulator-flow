@@ -123,12 +123,6 @@ function Flow() {
     }
   }, [edges]);
 
-  const updateNodeInternals = useUpdateNodeInternals();
-  // Call this function whenever the edges change
-  useEffect(() => {
-    
-  }, [edges, reactFlowInstance]);
-
   const downloadImage = useCallback((dataUrl: string) => {
     const a = document.createElement('a');
     a.setAttribute('download', 'reactflow.png');
@@ -160,8 +154,8 @@ function Flow() {
 
     // Function to update the graph data state
     const updateGraphData = useCallback(() => {
-      const nodesData = nodes.map(node => node.data);
-      setGraphData({ nodes: nodesData, edges });
+      //const nodesData = nodes.map(node => node.data);
+      setGraphData({ nodes, edges });
     }, [nodes, edges]);
     // Update graph data whenever nodes or edges change
     useEffect(() => {
@@ -201,12 +195,6 @@ function Flow() {
       abiNode: (props: any) => <CustomNode {...props} onInputChange={handleCustomNodeInputChange} />,
       startNode: StartNode,
     }), [handleCustomNodeInputChange]);
-
-    useEffect(() => {
-      const nodesData = nodes.map(node => node.data);
-      setGraphData({ nodes: nodesData, edges });
-    }, [nodes, edges]);
-
 
   return (
     <div ref={reactFlowWrapper} style={{ height: '100%' }} onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
