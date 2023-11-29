@@ -25,14 +25,15 @@ function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
   });
 
   // Handler to update the state when an input changes
-  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>, key: string) => {
+  const handleInputChange = (event: any, inputIndex: number) => {
     const newValue = event.target.value;
-    setInputValues((prevValues) => ({
+    const key = `${id}-input-${inputIndex}`;
+    setInputValues(prevValues => ({
       ...prevValues,
       [key]: newValue,
     }));
-    onInputChange(id, key, newValue); // Call the callback function
-  }, [onInputChange]);
+    onInputChange(id, inputIndex, newValue); // Pass the input index to the parent
+  };
 
   return (
     <div className={`bg-white ${borderStyle} border rounded-lg p-4 shadow-lg`}>
@@ -62,11 +63,11 @@ function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
                   Input {index + 1} ({input.type}):
                 </Label>
                 <input
-                  id={key}
+                  id={`${id}-input-${index}`}
                   type="text"
                   className="w-full p-2 border rounded border-gray-300 text-xs"
-                  onChange={(event) => handleInputChange(event, key)}
-                  value={inputValues[key]}
+                  onChange={(event) => handleInputChange(event, index)} // Pass the index of the input
+                  value={inputValues[`${id}-input-${index}`]}
                 />
               </div>
             );

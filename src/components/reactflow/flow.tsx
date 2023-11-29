@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import ReactFlow, {
   Controls,
   MiniMap,
@@ -43,9 +43,10 @@ const initialEdges: Edge[] = [
 ];
 
 const nodeTypes = {
-  abiNode: (props: any) => <CustomNode {...props} onInputChange={() => {}}/>,
-  startNode: StartNode, 
+  abiNode: CustomNode,
+  startNode: StartNode,
 };
+
 function Flow() {
   const [graphData, setGraphData] = useState({ nodes: initialNodes, edges: initialEdges });
 
@@ -170,6 +171,42 @@ function Flow() {
     useEffect(() => {
       console.log("Current Graph Data:", graphData);
     }, [graphData]);
+
+    
+    const handleCustomNodeInputChange = useCallback((nodeId: any, inputIndex: any, value: any) => {
+      setNodes(currentNodes => currentNodes.map(node => {
+        if (node.id === nodeId) {
+          // Clone the inputs array
+          const updatedInputs = [...node.data.details.inputs];
+          // Update the specific input's name
+          updatedInputs[inputIndex] = { ...updatedInputs[inputIndex], name: value };
+    
+          // Return the updated node
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              details: {
+                ...node.data.details,
+                inputs: updatedInputs,
+              },
+            },
+          };
+        }
+        return node;
+      }));
+    }, []);
+
+    const nodeTypes = useMemo(() => ({
+      abiNode: (props: any) => <CustomNode {...props} onInputChange={handleCustomNodeInputChange} />,
+      startNode: StartNode,
+    }), [handleCustomNodeInputChange]);
+
+    useEffect(() => {
+      const nodesData = nodes.map(node => node.data);
+      setGraphData({ nodes: nodesData, edges });
+    }, [nodes, edges]);
+
 
   return (
     <div ref={reactFlowWrapper} style={{ height: '100%' }} onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
