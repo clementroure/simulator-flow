@@ -56,13 +56,16 @@ function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
   // Compute connected outputs
   const connectedOutputs = useMemo(() => {
     const connectedEdges = graphData.edges.filter(edge => edge.target === id);
-    console.log('Connected Edges:', connectedEdges); // Log the connected edges
-
+    // console.log('Connected Edges:', connectedEdges); // Log the connected edges
+  
     return connectedEdges.flatMap(edge => {
       const sourceNode = graphData.nodes.find(node => node.id === edge.source);
-      console.log('Source Node for Edge:', sourceNode); // Log the source node
-
-      return sourceNode?.data?.details?.outputs?.map((output: any) => output.name) || [];
+      // console.log('Source Node for Edge:', sourceNode); // Log the source node
+  
+      // Use node name and index of the output to create a unique identifier
+      return sourceNode?.data?.details?.outputs?.map((output: any, index: number) => 
+        `${sourceNode.data.label}-${index}`
+      ) || [];
     });
   }, [id, graphData]);
     

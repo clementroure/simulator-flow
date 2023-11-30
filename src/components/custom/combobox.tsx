@@ -46,24 +46,34 @@ const frameworks = [
 ]
 
 export function ComboboxDemo({ connectedOutputs, onCustomSelected, onNonCustomSelected, onValueChange }: any) {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
-
+  const [open, setOpen] = React.useState(false);
+  
+  // Combine connectedOutputs with frameworks
   const options = [
-    ...connectedOutputs.map((inputName: any) => ({ value: inputName, label: inputName })),
+    ...connectedOutputs.map((outputName: any) => ({ value: outputName, label: outputName })),
     ...frameworks,
   ];
+
+  // Set initial value to the first option if available
+  const [value, setValue] = React.useState(options.length > 0 ? options[0].value : "");
+
+  // Update the value if the current value is no longer in the options
+  React.useEffect(() => {
+    if (!options.some(option => option.value === value)) {
+      setValue(options.length > 0 ? options[0].value : "");
+    }
+  }, [options, value]);
 
   const handleSelect = (currentValue: string) => {
       setValue(currentValue);
       setOpen(false);
   
       if (currentValue === "custom") {
-          onCustomSelected();
-          onValueChange(""); // Call onValueChange with an empty string
+        onCustomSelected();
+        onValueChange(""); // Reset the value
       } else {
-          onNonCustomSelected && onNonCustomSelected();
-          onValueChange && onValueChange(currentValue); // Pass the selected value back
+        onNonCustomSelected && onNonCustomSelected();
+        onValueChange && onValueChange(currentValue); // Pass the selected value back
       }
   };
 
