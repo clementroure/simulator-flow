@@ -2,7 +2,7 @@
 
 import { Handle, Position } from 'reactflow';
 import { Label } from '../ui/label';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ComboboxDemo } from '../custom/combobox';
 import useStore from '@/store';
 
@@ -52,6 +52,21 @@ function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
     setShowCustomInputs(prev => ({ ...prev, [key]: isCustomSelected }));
   };
 
+
+  // Compute connected outputs
+  const connectedOutputs = useMemo(() => {
+    const connectedEdges = graphData.edges.filter(edge => edge.target === id);
+    console.log('Connected Edges:', connectedEdges); // Log the connected edges
+
+    return connectedEdges.flatMap(edge => {
+      const sourceNode = graphData.nodes.find(node => node.id === edge.source);
+      console.log('Source Node for Edge:', sourceNode); // Log the source node
+
+      return sourceNode?.data?.details?.outputs?.map((output: any) => output.name) || [];
+    });
+  }, [id, graphData]);
+    
+
   return (
     <div className={`bg-white ${borderStyle} border rounded-lg p-4 shadow-lg`}>
       {/* Displaying the method name */}
@@ -79,11 +94,12 @@ function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
 
             {/* Render ComboboxDemo for each input */}
             <div className="mb-2">
-            <ComboboxDemo 
-                onValueChange={(value: any) => handleComboboxChange(index, value)}
-                onCustomSelected={() => handleCustomSelection(key, true)}
-                onNonCustomSelected={() => handleCustomSelection(key, false)}
-            />
+            <ComboboxDemo
+            onValueChange={(value: any) => handleComboboxChange(index, value)}
+            onCustomSelected={() => handleCustomSelection(`${id}-input-${index}`, true)}
+            onNonCustomSelected={() => handleCustomSelection(`${id}-input-${index}`, false)}
+            connectedOutputs={connectedOutputs}
+          />
             </div>
 
             {/* Conditional rendering of custom input field */}
