@@ -2,13 +2,22 @@
 
 import { Handle, Position } from 'reactflow';
 import { Label } from '../ui/label';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { ComboboxDemo } from '../custom/combobox';
+import useStore from '@/store';
 
 interface InputValues {
   [key: string]: string; 
 }
+type ShowCustomInputsType = {
+  [key: string]: boolean;
+};
 
 function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
+  const { graphData } = useStore();
+
+  const [showCustomInputs, setShowCustomInputs] = useState<ShowCustomInputsType>({});
+
   // Determine the border style based on whether the node is selected
   const borderStyle = selected ? 'border-blue-500' : 'border-black';
   const inputHandleStyle = { backgroundColor: 'green' };
@@ -35,6 +44,14 @@ function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
     onInputChange(id, inputIndex, newValue); // Pass the input index to the parent
   };
 
+  const handleComboboxChange = (inputIndex: number, value: string) => {
+    onInputChange(id, inputIndex, value);
+  };
+
+  const handleCustomSelection = (key: string, isCustomSelected: boolean) => {
+    setShowCustomInputs(prev => ({ ...prev, [key]: isCustomSelected }));
+  };
+
   return (
     <div className={`bg-white ${borderStyle} border rounded-lg p-4 shadow-lg`}>
       {/* Displaying the method name */}
@@ -50,30 +67,38 @@ function CustomNode({ id, data, isConnectable, selected, onInputChange }: any) {
       />
 
       {/* Input fields section */}
-      {data.details?.inputs && data.details.inputs.length > 0 && (
-        <>
-          <div className="text-xs font-semibold text-gray-700 mt-2">
-            Inputs:
+      {data.details?.inputs.map((input: any, index: number) => {
+        const key = `${id}-input-${index}`;
+
+        return (
+          <div key={key} className="mt-2">
+            {/* Display input name instead of generic label */}
+            <Label htmlFor={key} className="block text-xs mb-1">
+              Input {index + 1} ({input.type}):
+            </Label>
+
+            {/* Render ComboboxDemo for each input */}
+            <div className="mb-2">
+            <ComboboxDemo 
+                onValueChange={(value: any) => handleComboboxChange(index, value)}
+                onCustomSelected={() => handleCustomSelection(key, true)}
+                onNonCustomSelected={() => handleCustomSelection(key, false)}
+            />
+            </div>
+
+            {/* Conditional rendering of custom input field */}
+            {showCustomInputs[key] && (
+              <input
+                id={key}
+                type="text"
+                className="w-full p-2 border rounded border-gray-300 text-xs"
+                onChange={(event) => handleInputChange(event, index)}
+                value={inputValues[key]}
+              />
+            )}
           </div>
-          {data.details.inputs.map((input: any, index: number) => {
-            const key = `${id}-input-${index}`;
-            return (
-              <div key={key} className="mt-2">
-                <Label htmlFor={key} className="block text-xs mb-1">
-                  Input {index + 1} ({input.type}):
-                </Label>
-                <input
-                  id={`${id}-input-${index}`}
-                  type="text"
-                  className="w-full p-2 border rounded border-gray-300 text-xs"
-                  onChange={(event) => handleInputChange(event, index)} // Pass the index of the input
-                  value={inputValues[`${id}-input-${index}`]}
-                />
-              </div>
-            );
-          })}
-        </>
-      )}
+        );
+      })}
 
       {/* Output fields section */}
       {data.details?.outputs && data.details.outputs.length > 0 && (

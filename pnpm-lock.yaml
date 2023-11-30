@@ -131,6 +131,9 @@ dependencies:
   reactflow:
     specifier: ^11.10.1
     version: 11.10.1(@types/react@18.2.39)(react-dom@18.2.0)(react@18.2.0)
+  zustand:
+    specifier: ^4.4.7
+    version: 4.4.7(@types/react@18.2.39)(react@18.2.0)
 
 devDependencies:
   '@ianvs/prettier-plugin-sort-imports':

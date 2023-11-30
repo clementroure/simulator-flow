@@ -18,6 +18,7 @@ import { useReactFlow, getRectOfNodes, getTransformForBounds } from 'reactflow';
 import { Button } from '../ui/button';
 import CustomNode from './customNode';
 import StartNode from './startNode';
+import useStore from '@/store';
 
 const initialNodes: Node[] = [
   {
@@ -48,7 +49,7 @@ const nodeTypes = {
 };
 
 function Flow() {
-  const [graphData, setGraphData] = useState({ nodes: initialNodes, edges: initialEdges });
+  const { graphData, setGraphData } = useStore();
 
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
@@ -153,14 +154,15 @@ function Flow() {
 
 
     // Function to update the graph data state
-    const updateGraphData = useCallback(() => {
-      //const nodesData = nodes.map(node => node.data);
-      setGraphData({ nodes, edges });
-    }, [nodes, edges]);
+    const updateGraphData = (newData: any) => {
+      setGraphData(newData);
+    };
+    
     // Update graph data whenever nodes or edges change
     useEffect(() => {
-      updateGraphData();
-    }, [nodes, edges, updateGraphData]);
+      updateGraphData({ nodes, edges });
+    }, [nodes, edges]);
+
     // Print the graph data to the console (or display it in the UI)
     useEffect(() => {
       console.log("Current Graph Data:", graphData);
@@ -192,7 +194,7 @@ function Flow() {
     }, []);
 
     const nodeTypes = useMemo(() => ({
-      abiNode: (props: any) => <CustomNode {...props} onInputChange={handleCustomNodeInputChange} />,
+      abiNode: (props: any) => <CustomNode {...props} onInputChange={handleCustomNodeInputChange}/>,
       startNode: StartNode,
     }), [handleCustomNodeInputChange]);
 
