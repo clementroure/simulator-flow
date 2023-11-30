@@ -167,7 +167,6 @@ function Flow() {
     useEffect(() => {
       console.log("Current Graph Data:", graphData);
     }, [graphData]);
-
     
     const handleCustomNodeInputChange = useCallback((nodeId: any, inputIndex: any, value: any) => {
       setNodes(currentNodes => currentNodes.map(node => {

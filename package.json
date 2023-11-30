@@ -50,7 +50,9 @@
 		"cmdk": "^0.2.0",
 		"date-fns": "^2.30.0",
 		"eslint-plugin-prettier": "^5.0.1",
+		"file-saver": "^2.0.5",
 		"html-to-image": "^1.11.11",
+		"jszip": "^3.10.1",
 		"lucide-react": "^0.293.0",
 		"next": "^14.0.3",
 		"next-themes": "^0.2.1",
@@ -59,11 +61,13 @@
 		"react-dom": "^18.2.0",
 		"react-hook-form": "^7.48.2",
 		"reactflow": "^11.10.1",
+		"solc": "0.8.23-fixed",
 		"zustand": "^4.4.7"
 	},
 	"devDependencies": {
 		"@ianvs/prettier-plugin-sort-imports": "^4.1.1",
 		"@t3-oss/env-nextjs": "^0.7.1",
+		"@types/file-saver": "^2.0.7",
 		"@types/node": "20.10.0",
 		"@types/react": "18.2.39",
 		"@types/react-dom": "18.2.17",
