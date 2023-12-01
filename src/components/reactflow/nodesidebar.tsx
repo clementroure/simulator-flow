@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import { Button } from '../ui/button';
+import React, { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
+import { signOut } from "next-auth/react";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { signOut } from 'next-auth/react';
+
+import { Button } from "../ui/button";
 
 interface AbiItem {
   type: string;
@@ -29,7 +31,9 @@ function NodeSidebar({ onDragStart }: any) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchSolidityCode = async (url: string): Promise<string> => {
-    const rawUrl = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+    const rawUrl = url
+      .replace("github.com", "raw.githubusercontent.com")
+      .replace("/blob/", "/");
     const response = await fetch(rawUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch Solidity code: ${response.statusText}`);
@@ -38,15 +42,17 @@ function NodeSidebar({ onDragStart }: any) {
   };
 
   async function compileSolidityCode(sourceCode: string) {
-    const response = await fetch('/api/compile', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ sourceCode })
+    const response = await fetch("/api/compile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sourceCode }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(`Failed to compile code: ${errorData.error || response.statusText}`);
+      throw new Error(
+        `Failed to compile code: ${errorData.error || response.statusText}`
+      );
     }
 
     return await response.json();
@@ -56,18 +62,22 @@ function NodeSidebar({ onDragStart }: any) {
     setLoading(true);
     setError(null);
     try {
-      const code = await fetchSolidityCode('https://github.com/clementroure/test-contract/blob/main/UniswapV2Factory.sol');
+      const code = await fetchSolidityCode(
+        "https://github.com/clementroure/test-contract/blob/main/UniswapV2Factory.sol"
+      );
       const abiObject = await compileSolidityCode(code);
-      const contractsArray: ContractAbi[] = Object.entries(abiObject).map(([contractName, contract]) => {
-        return {
-          contractName,
-          abi: (contract as ContractAbi).abi || []
-        };
-      });
+      const contractsArray: ContractAbi[] = Object.entries(abiObject).map(
+        ([contractName, contract]) => {
+          return {
+            contractName,
+            abi: (contract as ContractAbi).abi || [],
+          };
+        }
+      );
       setCompiledAbi(contractsArray);
     } catch (error) {
-      console.error('Error:', error);
-      setError('Failed to load ABI');
+      console.error("Error:", error);
+      setError("Failed to load ABI");
     }
     setLoading(false);
   };
@@ -80,27 +90,36 @@ function NodeSidebar({ onDragStart }: any) {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           const result = e.target.result;
-          if (typeof result === 'string') {
+          if (typeof result === "string") {
             try {
               const abi = JSON.parse(result);
-              const contractName = file.name.replace('.json', '');
-  
+              const contractName = file.name.replace(".json", "");
+
               // Check if ABI is valid and not empty
               if (Array.isArray(abi) && abi.length > 0) {
                 // Check if contract already exists
-                if (!compiledAbi.some(contract => contract.contractName === contractName)) {
-                  setCompiledAbi(prevCompiledAbi => [...prevCompiledAbi, { contractName, abi }]);
+                if (
+                  !compiledAbi.some(
+                    (contract) => contract.contractName === contractName
+                  )
+                ) {
+                  setCompiledAbi((prevCompiledAbi) => [
+                    ...prevCompiledAbi,
+                    { contractName, abi },
+                  ]);
                 } else {
                   alert(`ABI for contract '${contractName}' already loaded.`);
                 }
               } else {
-                alert(`The file '${file.name}' does not contain a valid or non-empty ABI.`);
+                alert(
+                  `The file '${file.name}' does not contain a valid or non-empty ABI.`
+                );
               }
             } catch (error) {
               alert(`Error parsing ABI from file '${file.name}'`);
             }
           } else {
-            console.error('File content is not a string');
+            console.error("File content is not a string");
           }
         };
         reader.readAsText(file);
@@ -118,29 +137,43 @@ function NodeSidebar({ onDragStart }: any) {
     });
 
     if (Object.keys(zip.files).length > 0) {
-      zip.generateAsync({ type: "blob" })
-        .then((content) => {
-          saveAs(content, "abis.zip");
-        });
+      zip.generateAsync({ type: "blob" }).then((content) => {
+        saveAs(content, "abis.zip");
+      });
     } else {
       alert("No valid ABI items to download.");
     }
   };
 
   const logout = async () => {
-    await signOut(); 
-  }
+    await signOut();
+  };
 
   return (
-    <aside className="w-64 h-screen overflow-y-auto p-2.5">
+    <aside className="h-screen w-64 overflow-y-auto p-2.5">
       <div className="mb-4">
-        <Button variant="secondary" onClick={handleFetchAndCompile} className="w-full mb-2">
+        <Button
+          variant="secondary"
+          onClick={handleFetchAndCompile}
+          className="mb-2 w-full"
+        >
           Fetch and Compile Code
         </Button>
-        <Button variant="secondary" onClick={() => fileInputRef.current?.click()} className="w-full">
+        <Button
+          variant="secondary"
+          onClick={() => fileInputRef.current?.click()}
+          className="w-full"
+        >
           Load ABIs from File
         </Button>
-        <input type="file" ref={fileInputRef} onChange={handleFileSelect} style={{ display: 'none' }} multiple accept=".json" />
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileSelect}
+          style={{ display: "none" }}
+          multiple
+          accept=".json"
+        />
       </div>
       {loading ? (
         <p>Loading...</p>
@@ -149,30 +182,41 @@ function NodeSidebar({ onDragStart }: any) {
       ) : (
         <Accordion type="single" collapsible className="w-full">
           {compiledAbi.map((contract, contractIndex) => (
-            <AccordionItem key={contractIndex} value={`contract-${contractIndex}`}>
+            <AccordionItem
+              key={contractIndex}
+              value={`contract-${contractIndex}`}
+            >
               <AccordionTrigger>{contract.contractName}</AccordionTrigger>
               <AccordionContent>
-                {contract.abi.map((abiItem, index) => (
-                  (abiItem.type === 'function' || abiItem.type === 'variable') && (
-                    <div
-                      key={index}
-                      onDragStart={(event) => onDragStart(event, JSON.stringify(abiItem))}
-                      draggable
-                      className="p-2.5 border border-gray-300 mb-2.5 cursor-pointer hover:shadow-lg rounded transition duration-200 ease-in-out"
-                    >
-                      {abiItem.name}
-                    </div>
-                  )
-                ))}
+                {contract.abi.map(
+                  (abiItem, index) =>
+                    (abiItem.type === "function" ||
+                      abiItem.type === "variable") && (
+                      <div
+                        key={index}
+                        onDragStart={(event) =>
+                          onDragStart(event, JSON.stringify(abiItem))
+                        }
+                        draggable
+                        className="mb-2.5 cursor-pointer rounded border border-gray-300 p-2.5 transition duration-200 ease-in-out hover:shadow-lg"
+                      >
+                        {abiItem.name}
+                      </div>
+                    )
+                )}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
       )}
-      <Button variant="secondary" onClick={handleDownloadAbis} className="w-full mt-4">
+      <Button
+        variant="secondary"
+        onClick={handleDownloadAbis}
+        className="mt-4 w-full"
+      >
         Download ABIs
       </Button>
-      <Button variant="secondary" onClick={logout} className="w-full mt-4">
+      <Button variant="secondary" onClick={logout} className="mt-4 w-full">
         Logout
       </Button>
     </aside>

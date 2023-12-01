@@ -1,22 +1,22 @@
-import { Metadata } from "next"
-import Image from "next/image"
-import Link from "next/link"
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { UserAuthForm } from "./components/user-auth-form"
-import myImage from '../../../public/images/auth/auth.jpg'; // Adjust the path as necessary
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+
+import myImage from "../../../public/images/auth/auth.jpg"; // Adjust the path as necessary
+import UserAuthForm from "./components/user-auth-form";
 
 export const metadata: Metadata = {
   title: "Authentication",
   description: "Authentication forms built using the components.",
-}
+};
 
 export default function AuthenticationPage() {
-
   return (
     <>
-{/*       <div className="md:hidden">
+      {/*       <div className="md:hidden">
         <Image
           src={myImage}
           layout="fill"
@@ -43,7 +43,7 @@ export default function AuthenticationPage() {
           Login
         </Link>
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-          <div className="absolute inset-0 bg-zinc-900" >
+          <div className="absolute inset-0 bg-zinc-900">
             {/* <Image
               src={myImage}
               layout="fill"
@@ -117,5 +117,5 @@ export default function AuthenticationPage() {
         </div>
       </div>
     </>
-  )
+  );
 }

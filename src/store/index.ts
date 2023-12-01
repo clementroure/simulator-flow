@@ -1,9 +1,9 @@
-import create from 'zustand'
+import create from "zustand";
 
 // Define a type for your store state
 interface GraphData {
-  nodes: any[]; 
-  edges: any[]; 
+  nodes: any[];
+  edges: any[];
 }
 
 interface GraphDataStore {

@@ -1,15 +1,15 @@
-import NextAuth, { SessionStrategy } from 'next-auth';
-import { createClient } from '@supabase/supabase-js';
-import { SupabaseAdapter } from '@next-auth/supabase-adapter';
-import GoogleProvider from 'next-auth/providers/google';
-import GitHubProvider from 'next-auth/providers/github';
-import EmailProvider from 'next-auth/providers/email';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import FacebookProvider from 'next-auth/providers/facebook';
-import TwitterProvider from 'next-auth/providers/twitter';
-import LinkedInProvider from 'next-auth/providers/linkedin';
-import AppleProvider from 'next-auth/providers/apple';
-import { Adapter } from 'next-auth/adapters';
+import { SupabaseAdapter } from "@next-auth/supabase-adapter";
+import { createClient } from "@supabase/supabase-js";
+import NextAuth, { SessionStrategy } from "next-auth";
+import { Adapter } from "next-auth/adapters";
+import AppleProvider from "next-auth/providers/apple";
+import CredentialsProvider from "next-auth/providers/credentials";
+import EmailProvider from "next-auth/providers/email";
+import FacebookProvider from "next-auth/providers/facebook";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import LinkedInProvider from "next-auth/providers/linkedin";
+import TwitterProvider from "next-auth/providers/twitter";
 
 export const authOptions = {
   providers: [
@@ -50,15 +50,15 @@ export const authOptions = {
     }),
     // Credentials Provider
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
         username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
         // Replace the following with your actual user verification logic
         const user = false; // await findUser(credentials.username, credentials.password);
-    
+
         if (user) {
           // Return the user object. This should be the actual user object from your database or authentication service
           return user;
@@ -66,15 +66,15 @@ export const authOptions = {
           // If the credentials are invalid or the user doesn't exist, return null
           return null;
         }
-      }
+      },
     }),
   ],
   adapter: SupabaseAdapter({
     url: process.env.SUPABASE_URL as string,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string
+    secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
   }) as Adapter,
   session: {
-    strategy: 'jwt' as SessionStrategy, 
+    strategy: "jwt" as SessionStrategy,
   },
 };
 

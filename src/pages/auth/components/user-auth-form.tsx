@@ -1,38 +1,37 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
+import { signIn } from "next-auth/react";
 
-import { cn } from "@/lib/utils"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons"
-import { signIn } from 'next-auth/react';
+import { cn } from "@/lib/utils";
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+export default function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
 
     setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+      setIsLoading(false);
+    }, 3000);
   }
 
   const handleSignInWithGoogle = async () => {
-    setIsLoading(true)
-    await signIn('google');
+    setIsLoading(true);
+    await signIn("google");
   };
-  
+
   const handleSignInWithGitHub = async () => {
-    setIsLoading(true)
-    await signIn('github');
+    setIsLoading(true);
+    await signIn("github");
   };
-  
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -70,7 +69,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading} onClick={handleSignInWithGitHub}>
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isLoading}
+        onClick={handleSignInWithGitHub}
+      >
         {isLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
@@ -79,5 +83,5 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         Github
       </Button>
     </div>
-  )
+  );
 }

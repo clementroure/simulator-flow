@@ -1,7 +1,7 @@
 // pages/callback.js
-import { useEffect } from 'react';
-import { useSession, getSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { getSession, GetSessionParams, useSession } from "next-auth/react";
 
 export default function Callback() {
   const { data: session } = useSession();
@@ -10,7 +10,7 @@ export default function Callback() {
   useEffect(() => {
     // If the session exists, redirect to the home page
     if (session) {
-      router.push('/');
+      router.push("/");
     }
   }, [session, router]);
 
@@ -23,7 +23,9 @@ export default function Callback() {
 }
 
 // This function runs on every request to this page
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(
+  context: GetSessionParams | undefined
+) {
   // Check if the user is authenticated on the server
   const session = await getSession(context);
 
@@ -31,7 +33,7 @@ export async function getServerSideProps(context: any) {
     // If not authenticated, redirect to the login page
     return {
       redirect: {
-        destination: '/', // Replace '/login' with your login route
+        destination: "/", // Replace '/login' with your login route
         permanent: false,
       },
     };
