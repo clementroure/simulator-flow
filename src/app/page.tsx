@@ -20,6 +20,7 @@ export default function IndexPage() {
     event.dataTransfer.effectAllowed = 'move';
   };
 
+  if (status === 'loading') return <h1> loading... please wait</h1>;
   if (status === "authenticated") {
     // User is logged in, show the main content
     return (

@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { signOut } from 'next-auth/react';
 
 interface AbiItem {
   type: string;
@@ -126,6 +127,10 @@ function NodeSidebar({ onDragStart }: any) {
     }
   };
 
+  const logout = async () => {
+    await signOut(); 
+  }
+
   return (
     <aside className="w-64 h-screen overflow-y-auto p-2.5">
       <div className="mb-4">
@@ -166,6 +171,9 @@ function NodeSidebar({ onDragStart }: any) {
       )}
       <Button variant="secondary" onClick={handleDownloadAbis} className="w-full mt-4">
         Download ABIs
+      </Button>
+      <Button variant="secondary" onClick={logout} className="w-full mt-4">
+        Logout
       </Button>
     </aside>
   );
