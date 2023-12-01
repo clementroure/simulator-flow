@@ -6,6 +6,9 @@ const nextConfig = {
     // serverActions: true,
     typedRoutes: true,
   },
+  images: {
+    domains: ['example.com', 'anotherdomain.com'], 
+  },
 };
 
 module.exports = nextConfig;

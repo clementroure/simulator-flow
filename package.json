@@ -17,7 +17,11 @@
 		"fix-all": "pnpm lint:fix && pnpm format"
 	},
 	"dependencies": {
+		"@auth/supabase-adapter": "^0.1.10",
 		"@hookform/resolvers": "^3.3.2",
+		"@next-auth/firebase-adapter": "^2.0.1",
+		"@next-auth/supabase-adapter": "^0.2.1",
+		"@prisma/client": "5.6.0",
 		"@radix-ui/react-accordion": "^1.1.2",
 		"@radix-ui/react-alert-dialog": "^1.0.5",
 		"@radix-ui/react-aspect-ratio": "^1.0.3",
@@ -45,6 +49,8 @@
 		"@radix-ui/react-toggle": "^1.0.3",
 		"@radix-ui/react-toggle-group": "^1.0.4",
 		"@radix-ui/react-tooltip": "^1.0.7",
+		"@stripe/stripe-js": "^2.2.0",
+		"@supabase/supabase-js": "^2.39.0",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.0.0",
 		"cmdk": "^0.2.0",
@@ -55,6 +61,7 @@
 		"jszip": "^3.10.1",
 		"lucide-react": "^0.293.0",
 		"next": "^14.0.3",
+		"next-auth": "^4.24.5",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",
 		"react-day-picker": "^8.9.1",
@@ -62,6 +69,7 @@
 		"react-hook-form": "^7.48.2",
 		"reactflow": "^11.10.1",
 		"solc": "0.8.23-fixed",
+		"stripe": "^14.7.0",
 		"zustand": "^4.4.7"
 	},
 	"devDependencies": {
@@ -82,6 +90,7 @@
 		"postcss": "8.4.31",
 		"prettier": "^3.1.0",
 		"prettier-plugin-tailwindcss": "^0.5.7",
+		"prisma": "^5.6.0",
 		"shadcn-ui": "^0.4.1",
 		"tailwind-merge": "^2.0.0",
 		"tailwindcss": "3.3.5",
