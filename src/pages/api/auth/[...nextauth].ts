@@ -9,6 +9,7 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import TwitterProvider from 'next-auth/providers/twitter';
 import LinkedInProvider from 'next-auth/providers/linkedin';
 import AppleProvider from 'next-auth/providers/apple';
+import { Adapter } from 'next-auth/adapters';
 
 export const authOptions = {
   providers: [
@@ -70,8 +71,8 @@ export const authOptions = {
   ],
   adapter: SupabaseAdapter({
     url: process.env.SUPABASE_URL as string,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
-  }),
+    secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string
+  }) as Adapter,
   session: {
     strategy: 'jwt' as SessionStrategy, 
   },
