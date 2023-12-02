@@ -113,6 +113,14 @@ export const Icons = {
       />
     </svg>
   ),
+  linkedIn: (props: IconProps) => (
+    <svg role="img" viewBox="0 0 24 24" {...props}>
+      <path
+        fill="currentColor"
+        d="M19 0H5a5 5 0 00-5 5v14a5 5 0 005 5h14a5 5 0 005-5V5a5 5 0 00-5-5zM8.7 20H5.5V9h3.2v11zm-1.6-12.3a1.9 1.9 0 110-3.8 1.9 1.9 0 010 3.8zM20 20h-3.2v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9V20H9.5V9h3v1.5h.1a3.3 3.3 0 013-2c3.2 0 3.8 2.1 3.8 4.8V20z"
+      />
+    </svg>
+  ),
   apple: (props: IconProps) => (
     <svg role="img" viewBox="0 0 24 24" {...props}>
       <path

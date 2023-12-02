@@ -7,8 +7,14 @@ const nextConfig = {
     typedRoutes: true,
   },
   images: {
-    domains: ['example.com', 'anotherdomain.com'], 
+    domains: ['drive.google.com'], 
   },
+  /* webpack: (config) => {
+    config.module.rules.push({
+      test: /\.node/,
+      use: "raw-loader",
+    })
+  }, */
 };
 
 module.exports = nextConfig;

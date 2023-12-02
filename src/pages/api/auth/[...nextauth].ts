@@ -1,3 +1,4 @@
+import { findUser } from "@/lib/auth";
 import { SupabaseAdapter } from "@next-auth/supabase-adapter";
 import { createClient } from "@supabase/supabase-js";
 import NextAuth, { SessionStrategy } from "next-auth";
@@ -45,7 +46,18 @@ export const authOptions = {
     }),
     // Email Provider
     EmailProvider({
-      server: process.env.EMAIL_SERVER,
+      server: {
+        host: process.env.EMAIL_SERVER,
+        port: process.env.EMAIL_SERVER_PORT,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      },
       from: process.env.EMAIL_FROM,
     }),
     // Credentials Provider
@@ -53,20 +65,17 @@ export const authOptions = {
       name: "Credentials",
       credentials: {
         username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
-        // Replace the following with your actual user verification logic
-        const user = false; // await findUser(credentials.username, credentials.password);
-
+        const user = await findUser(credentials!.username, credentials!.password);
         if (user) {
-          // Return the user object. This should be the actual user object from your database or authentication service
+          console.log(user);
           return user;
         } else {
-          // If the credentials are invalid or the user doesn't exist, return null
-          return null;
+          throw new Error('Invalid username or password');
         }
-      },
+      }
     }),
   ],
   adapter: SupabaseAdapter({

@@ -5,8 +5,9 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-import myImage from "../../../public/images/auth/auth.jpg"; // Adjust the path as necessary
+import myImage from "../../../public/images/auth/agent.png"; // Adjust the path as necessary
 import UserAuthForm from "./components/user-auth-form";
+import { useState } from "react";
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -14,24 +15,11 @@ export const metadata: Metadata = {
 };
 
 export default function AuthenticationPage() {
+
+  const [activeTab, setActiveTab] = useState('register');
+
   return (
     <>
-      {/*       <div className="md:hidden">
-        <Image
-          src={myImage}
-          layout="fill"
-          objectFit="cover"
-          alt="Authentication"
-          className="block dark:hidden"
-        />
-        <Image
-          src={myImage}
-          layout="fill"
-          objectFit="cover"
-          alt="Authentication"
-          className="hidden dark:block"
-        />
-      </div> */}
       <div className="container relative hidden h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
           href="/"
@@ -40,24 +28,25 @@ export default function AuthenticationPage() {
             "absolute right-4 top-4 md:right-8 md:top-8"
           )}
         >
-          Login
+          Back
         </Link>
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
           <div className="absolute inset-0 bg-zinc-900">
             {/* <Image
               src={myImage}
-              layout="fill"
+              height={600}
               objectFit="cover"
               alt="Authentication"
-              className="block dark:hidden opacity-10"
+              className="block dark:hidden"
             />
             <Image
               src={myImage}
-              layout="fill"
+              height={600}
               objectFit="cover"
               alt="Authentication"
-              className="hidden dark:block opacity-10"
+              className="hidden dark:block"
             /> */}
+           {/*  <PdfViewer /> */}
           </div>
           <div className="relative z-20 flex items-center text-lg font-medium">
             <svg
@@ -87,6 +76,7 @@ export default function AuthenticationPage() {
         </div>
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            {activeTab == 'register' ?
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
                 Create an account
@@ -95,7 +85,17 @@ export default function AuthenticationPage() {
                 Enter your email below to create your account
               </p>
             </div>
-            <UserAuthForm />
+            :
+            <div className="flex flex-col space-y-2 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Login to your account
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Enter your email below to login to your account
+              </p>
+            </div>
+            }
+            <UserAuthForm activeTab={activeTab} setActiveTab={setActiveTab}/>
             <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <Link
