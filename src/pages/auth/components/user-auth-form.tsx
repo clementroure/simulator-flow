@@ -18,10 +18,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   activeTab: any;
@@ -46,6 +47,9 @@ export default function UserAuthForm({
 
   const [message, setMessage] = useState('');
 
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const captchaRef = useRef<any>(null);
+
   const handleTabChange = (value: string) => {
     setActiveTab(value);;
   };
@@ -58,17 +62,39 @@ export default function UserAuthForm({
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
+  const onCaptchaSuccess = (token: any) => {
+    setCaptchaToken(token);
 
+    // Proceed with either login or registration after captcha success
     if (activeTab === 'login') {
       login();
-    }
-    else{
+    } else {
       register();
     }
 
     setIsLoading(false);
+  };
+  const onCaptchaError = (error: any) => {
+    console.error('Captcha error:', error);
+    setIsLoading(false);
+    // Handle any additional error logic here
+  };
+
+  const onCaptchaExpire = () => {
+    console.log('Captcha expired');
+    setIsLoading(false);
+    // Handle any additional expiration logic here
+  };
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // setIsLoading(true);
+
+    if (activeTab === 'login') {
+      login();
+    } else {
+      // Trigger captcha, rest of the process will be handled in onCaptchaSuccess
+      await captchaRef.current!.execute();
+    }
   };
 
   /* async function onSubmit(event: React.SyntheticEvent) {
@@ -189,6 +215,16 @@ export default function UserAuthForm({
                         <FormMessage />
                       </FormItem>
                     )}
+                  />
+                </div>
+                <div className="hidden">
+                  <HCaptcha
+                    sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY as string}
+                    onVerify={onCaptchaSuccess}
+                    onError={onCaptchaError}
+                    onExpire={onCaptchaExpire}
+                    size="invisible"
+                    ref={captchaRef}
                   />
                 </div>
                 <Button disabled={isLoading}>
@@ -313,5 +349,6 @@ export default function UserAuthForm({
         Linkedin
       </Button>
     </div>
+
   );
 }

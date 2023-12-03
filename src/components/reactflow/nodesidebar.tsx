@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/accordion";
 
 import { Button } from "../ui/button";
+import stripePromise from "@/lib/stripe";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutButton from "../stripe/checkoutButton";
 
 interface AbiItem {
   type: string;
@@ -166,6 +169,11 @@ function NodeSidebar({ onDragStart }: any) {
         >
           Load ABIs from File
         </Button>
+
+        <Elements stripe={stripePromise}>
+          <CheckoutButton />
+        </Elements>
+
         <input
           type="file"
           ref={fileInputRef}

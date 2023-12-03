@@ -8,6 +8,9 @@ dependencies:
   '@auth/supabase-adapter':
     specifier: ^0.1.10
     version: 0.1.10(@supabase/supabase-js@2.39.0)(nodemailer@6.9.7)
+  '@hcaptcha/react-hcaptcha':
+    specifier: ^1.9.2
+    version: 1.9.2(react-dom@18.2.0)(react@18.2.0)
   '@hookform/resolvers':
     specifier: ^3.3.2
     version: 3.3.2(react-hook-form@7.48.2)
@@ -104,6 +107,9 @@ dependencies:
   '@radix-ui/react-tooltip':
     specifier: ^1.0.7
     version: 1.0.7(@types/react-dom@18.2.17)(@types/react@18.2.39)(react-dom@18.2.0)(react@18.2.0)
+  '@stripe/react-stripe-js':
+    specifier: ^2.4.0
+    version: 2.4.0(@stripe/stripe-js@2.2.0)(react-dom@18.2.0)(react@18.2.0)
   '@stripe/stripe-js':
     specifier: ^2.2.0
     version: 2.2.0
@@ -1726,6 +1732,22 @@ packages:
       yargs: 17.7.2
     dev: false
     optional: true
+
+  /@hcaptcha/loader@1.0.10:
+    resolution: {integrity: sha512-aWrYY47l42O/7OhPDOYD1Xwl0pa3tmMAOu8yNTuuhcwRme0MDw3mMNG7EhAF4wqyE8SAr7kXiWYp+ryOnfS8EQ==}
+    dev: false
+
+  /@hcaptcha/react-hcaptcha@1.9.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FKsfxi2PV0UTFp3TvW8L02z2MHZjhBVOvH1OznR4ccxjugCZa8ix4weP/wKRUaLHcKwmCfXSu35Agen41aP1mQ==}
+    peerDependencies:
+      react: '>= 16.3.0'
+      react-dom: '>= 16.3.0'
+    dependencies:
+      '@babel/runtime': 7.23.4
+      '@hcaptcha/loader': 1.0.10
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@hookform/resolvers@3.3.2(react-hook-form@7.48.2):
     resolution: {integrity: sha512-Tw+GGPnBp+5DOsSg4ek3LCPgkBOuOgS5DsDV7qsWNH9LZc433kgsWICjlsh2J9p04H2K66hsXPPb9qn9ILdUtA==}
@@ -3632,6 +3654,19 @@ packages:
   /@rushstack/eslint-patch@1.6.0:
     resolution: {integrity: sha512-2/U3GXA6YiPYQDLGwtGlnNgKYBSwCFIHf8Y9LUY5VATHdtbLlU0Y1R3QoBnT0aB4qv/BEiVVsj7LJXoQCgJ2vA==}
     dev: true
+
+  /@stripe/react-stripe-js@2.4.0(@stripe/stripe-js@2.2.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-1jVQEL3OuhuzNlf4OdfqovHt+MkWh8Uh8xpLxx/xUFUDdF+7/kDOrGKy+xJO3WLCfZUL7NAy+/ypwXbbYZi0tg==}
+    peerDependencies:
+      '@stripe/stripe-js': ^1.44.1 || ^2.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@stripe/stripe-js': 2.2.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@stripe/stripe-js@2.2.0:
     resolution: {integrity: sha512-YyXQbsXvnNRJ6MofFhCLIQ4W7UpfkfSOQhjIaHEiCMBv3IBxhzugXiYNNzceGTK/7DL31v7HtTnkJ+FI+6AIow==}
@@ -8102,7 +8137,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /proto3-json-serializer@1.1.1:
     resolution: {integrity: sha512-AwAuY4g9nxx0u52DnSMkqqgyLHaW/XaPLtaAo3y/ZCfeaQB/g4YDH4kb8Wc/mWzWvu0YjOznVnfn373MVZZrgw==}
@@ -8230,7 +8264,6 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: true
 
   /react-remove-scroll-bar@2.3.4(@types/react@18.2.39)(react@18.2.0):
     resolution: {integrity: sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A==}

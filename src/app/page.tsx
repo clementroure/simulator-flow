@@ -10,6 +10,7 @@ import "./styles.css";
 import { useEffect } from "react";
 import AuthenticationPage from "@/pages/auth/authPage";
 import { useSession } from "next-auth/react";
+import Pricing from "@/pages/pricing";
 
 export default function IndexPage() {
   const { data: session, status } = useSession();
