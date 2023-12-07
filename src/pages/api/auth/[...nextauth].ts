@@ -1,7 +1,6 @@
-import { findUser } from "@/lib/auth";
+import { createUser, findUserByEmail, verifyPassword } from "@/lib/auth";
 import { SupabaseAdapter } from "@next-auth/supabase-adapter";
-import { createClient } from "@supabase/supabase-js";
-import NextAuth, { SessionStrategy } from "next-auth";
+import { SessionStrategy } from "next-auth";
 import { Adapter } from "next-auth/adapters";
 import AppleProvider from "next-auth/providers/apple";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -11,6 +10,7 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import TwitterProvider from "next-auth/providers/twitter";
+import NextAuth from "next-auth/next";
 
 export const authOptions = {
   providers: [
@@ -38,7 +38,23 @@ export const authOptions = {
     LinkedInProvider({
       clientId: process.env.LINKEDIN_ID as string,
       clientSecret: process.env.LINKEDIN_SECRET as string,
-    }),
+      authorization: {
+        params: { scope: 'openid profile email' },
+      },
+      issuer: 'https://www.linkedin.com',
+      jwks_endpoint: 'https://www.linkedin.com/oauth/openid/jwks',
+      profile(profile, tokens) {
+        const defaultImage =
+          'https://cdn-icons-png.flaticon.com/512/174/174857.png';
+          console.log(profile)
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture ?? defaultImage,
+        };
+      },
+   }),
     // Apple Provider
     AppleProvider({
       clientId: process.env.APPLE_ID as string,
@@ -64,16 +80,34 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+        isSignUp: { label: "Is Sign Up", type: "isSignUp" }
       },
-      async authorize(credentials, req) {
-        const user = await findUser(credentials!.username, credentials!.password);
-        if (user) {
-          console.log(user);
-          return user;
+      async authorize(credentials) {
+        if (credentials!.isSignUp == 'true') {
+          // Handle account creation
+          const existingUser = await findUserByEmail(credentials!.email);
+          if (existingUser) {
+            console.log('User already exists with this email')
+            throw new Error('User already exists with this email');
+          }
+          console.log(credentials!.email)
+          const newUser = await createUser(credentials!.email, credentials!.password);
+          console.log('User Account created !')
+          console.log(newUser)
+          return newUser;
         } else {
-          throw new Error('Invalid username or password');
+          // Handle login
+          const user = await findUserByEmail(credentials!.email);
+          if (user && await verifyPassword(user, credentials!.password)) {
+            console.log('User logged in !')
+            console.log(user)
+            return user;
+          } else {
+            console.log('Invalid email or password')
+            throw new Error('Invalid email or password');
+          }
         }
       }
     }),

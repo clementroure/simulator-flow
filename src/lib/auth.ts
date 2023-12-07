@@ -15,37 +15,47 @@ const supabase = createClient(
     }
   }
 );
-
-export async function findUser(
-  email: string,
-  password: string
-): Promise<any> {
+// Function to find user by email only
+export async function findUserByEmail(email: string): Promise<any> {
   const { data: user, error } = await supabase
     .from("users")
     .select("*")
     .eq("email", email)
     .single();
 
-  console.log(user)
+  if (error || !user) {
+    return null;
+  }
+
+  return user;
+}
+
+// Function to verify user password
+export async function verifyPassword(user: any, password: string): Promise<boolean> {
+  return await bcrypt.compare(password, user.password_hash);
+}
+
+
+export async function createUser(email: string, password: string): Promise<any> {
+  const password_hash = await bcrypt.hash(password, 10)
+
+  console.log(email);
+
+  const { data, error } = await supabase
+    .from('users')
+    .insert([{ email, password_hash }])
+    .single();
 
   if (error) {
-    console.error("Error fetching user:", error.message);
-    return null;
+    console.error(error);
+    throw error;
   }
 
-  if (!user) {
-    console.error("User not found");
-    return null;
-  }
-
-  // Check if the passwords match
-  const match = await bcrypt.compare(password, user.password_hash);
-  if (match) {
-    // Remove sensitive data before returning the user object
-    const { password_hash, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+  if (data) {
+    // Assuming 'id' is the name of your UUID field
+    return data;
   } else {
-    console.error("Password does not match");
-    return null;
+    // Handle the case where data is null
+    throw new Error("User creation failed, no data returned");
   }
 }

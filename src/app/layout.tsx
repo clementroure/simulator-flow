@@ -6,8 +6,10 @@ import { siteConfig } from "@/config/site";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
-import { TailwindIndicator } from "@/components/tailwind-indicator";
+import SEO from './next-seo.config';
+import { DefaultSeo } from "next-seo";
 
+/* nexta metadata or next seo ? */
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
@@ -57,8 +59,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning>
       <body className={cn("min-h-screen antialiased", fontSans.className)}>
         <Providers>
+{/*       <DefaultSeo {...SEO} /> */}
           {children}
-          {/* <TailwindIndicator /> */}
         </Providers>
       </body>
     </html>

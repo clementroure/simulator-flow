@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://vercel.com/clement549/simulator-flow
+
+# Sitemaps
+Sitemap: https://vercel.com/clement549/simulator-flow/sitemap.xml

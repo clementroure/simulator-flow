@@ -65,15 +65,21 @@ export default function UserAuthForm({
   const onCaptchaSuccess = (token: any) => {
     setCaptchaToken(token);
 
+    // Retrieve current form values
+    const formValues = form.getValues();
+    const email = formValues.email;
+    const password = formValues.password;
+
     // Proceed with either login or registration after captcha success
     if (activeTab === 'login') {
-      login();
+      login(email, password);
     } else {
-      register();
+      register(email, password);
     }
 
     setIsLoading(false);
   };
+
   const onCaptchaError = (error: any) => {
     console.error('Captcha error:', error);
     setIsLoading(false);
@@ -86,17 +92,6 @@ export default function UserAuthForm({
     // Handle any additional expiration logic here
   };
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // setIsLoading(true);
-
-    if (activeTab === 'login') {
-      login();
-    } else {
-      // Trigger captcha, rest of the process will be handled in onCaptchaSuccess
-      await captchaRef.current!.execute();
-    }
-  };
-
   /* async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
@@ -106,44 +101,52 @@ export default function UserAuthForm({
     setIsLoading(false);
   } */
 
-  async function login() {
-    setIsLoading(true);
+  const onSubmit = async (values: any) => {
+    const { email, password } = values;
 
-    // Use credentials for sign-in
-    await signIn('credentials', {
+    // Trigger captcha execution for both login and registration
+    if (captchaRef.current) {
+      await captchaRef.current.execute();
+    } else {
+      console.error('Captcha not available');
+    }
+  };
+
+  async function login(email: string, password: string) {
+    setIsLoading(true);
+    console.log('Login with:', email);
+
+    const user = await signIn('credentials', {
       redirect: false,
-      username: email,
-      password: password,
-     //  callbackUrl: '/your-callback-url'
+      email,
+      password,
+      isSignUp: false,
     });
 
     setIsLoading(false);
   }
 
-  async function register() {
-    setMessage('');
+  async function register(email: string, password: string) {
+    setIsLoading(true);
+    console.log('Register with:', email);
 
-    try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+    const user = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+      isSignUp: true,
+    });
+    if(user){
+      // auto login after signup
+      await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+        isSignUp: false,
       });
-      const result = await response.json();
-
-      if (response.ok) {
-        setMessage('Account created successfully.');
-        // Optionally, redirect the user or automatically sign them in
-      } else {
-        // If the response is not OK, set the message to the error message from the response
-        console.error(result.error);
-        setMessage(result.error || 'Registration failed');
-      }
-    } catch (error) {
-      // If there's an error in sending the request
-      console.error(error);
-      setMessage(error!.toString() || 'Failed to create account.');
     }
+
+    setIsLoading(false);
   }
 
   const handleSignInWithGoogle = async () => {
@@ -163,6 +166,7 @@ export default function UserAuthForm({
 
 
   return (
+    <>
     <div className={cn("grid gap-6", className)} {...props}>
       <Tabs defaultValue="register">
         <TabsList>
@@ -215,16 +219,6 @@ export default function UserAuthForm({
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
-                </div>
-                <div className="hidden">
-                  <HCaptcha
-                    sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY as string}
-                    onVerify={onCaptchaSuccess}
-                    onError={onCaptchaError}
-                    onExpire={onCaptchaExpire}
-                    size="invisible"
-                    ref={captchaRef}
                   />
                 </div>
                 <Button disabled={isLoading}>
@@ -349,6 +343,16 @@ export default function UserAuthForm({
         Linkedin
       </Button>
     </div>
-
+    <div className="hidden">
+      <HCaptcha
+        sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY as string}
+        onVerify={onCaptchaSuccess}
+        onError={onCaptchaError}
+        onExpire={onCaptchaExpire}
+        size="invisible"
+        ref={captchaRef}
+      />
+    </div>
+  </>
   );
 }
