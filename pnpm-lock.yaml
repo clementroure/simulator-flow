@@ -24,8 +24,8 @@ dependencies:
     specifier: ^0.2.1
     version: 0.2.1(@supabase/supabase-js@2.39.0)(next-auth@4.24.5)
   '@prisma/client':
-    specifier: 5.6.0
-    version: 5.6.0(prisma@5.6.0)
+    specifier: 5.8.1
+    version: 5.8.1(prisma@5.6.0)
   '@radix-ui/react-accordion':
     specifier: ^1.1.2
     version: 1.1.2(@types/react-dom@18.2.17)(@types/react@18.2.39)(react-dom@18.2.0)(react@18.2.0)
@@ -2034,8 +2034,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@prisma/client@5.6.0(prisma@5.6.0):
-    resolution: {integrity: sha512-mUDefQFa1wWqk4+JhKPYq8BdVoFk9NFMBXUI8jAkBfQTtgx8WPx02U2HB/XbAz3GSUJpeJOKJQtNvaAIDs6sug==}
+  /@prisma/client@5.8.1(prisma@5.6.0):
+    resolution: {integrity: sha512-xQtMPfbIwLlbm0VVIVQY2yqQVOxPwRQhvIp7Z3m2900g1bu/zRHKhYZJQWELqmjl6d8YwBy0K2NvMqh47v1ubw==}
     engines: {node: '>=16.13'}
     requiresBuild: true
     peerDependencies:
@@ -2044,12 +2044,7 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee
       prisma: 5.6.0
-    dev: false
-
-  /@prisma/engines-version@5.6.0-32.e95e739751f42d8ca026f6b910f5a2dc5adeaeee:
-    resolution: {integrity: sha512-UoFgbV1awGL/3wXuUK3GDaX2SolqczeeJ5b4FVec9tzeGbSWJboPSbT0psSrmgYAKiKnkOPFSLlH6+b+IyOwAw==}
     dev: false
 
   /@prisma/engines@5.6.0:
